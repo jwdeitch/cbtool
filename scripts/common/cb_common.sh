@@ -1672,6 +1672,10 @@ function fix_ulimit {
                 sudo bash -c "echo \"*         -       noproc      1048576\" >> /etc/security/limits.conf"
                 sudo bash -c "echo \"root      -       noproc      1048576\" >> /etc/security/limits.conf"
             fi
+	    sudo bash -c "echo \"*       soft    memlock         unlimited\" >> /etc/security/limits.conf"
+	    sudo bash -c "echo \"root    soft    memlock         unlimited\" >> /etc/security/limits.conf"
+	    sudo bash -c "echo \"*       hard    memlock         unlimited\" >> /etc/security/limits.conf"
+	    sudo bash -c "echo \"root    hard    memlock         unlimited\" >> /etc/security/limits.conf"
         fi
 
         sudo cat /etc/sysctl.conf | grep "fs.file-max = 1048576" > /dev/null 2>&1
