@@ -40,6 +40,7 @@ class MysqlMgdConn(MetricStoreMgdConn) :
         self.lastrow_mutex = threading.Lock()
         self.conn_mutex = threading.Lock()
         self.update_mutex = threading.Lock()
+        cbdebug("HELLO?", True)
 
     @trace
     def connect(self, tout) :

@@ -68,10 +68,11 @@ class PlmCmds(CommonCloudFunctions) :
         self.vhw_config["bronze32"] = { "vcpus" : "1", "vmem" : "2048", "vstorage" : "179200", "vnics" : "1" }
         self.vhw_config["iron32"] = { "vcpus" : "2", "vmem" : "2048", "vstorage" : "179200", "vnics" : "1" }
         self.vhw_config["silver32"] = { "vcpus" : "4", "vmem" : "2048", "vstorage" : "358400", "vnics" : "1" }
-        self.vhw_config["gold32"] = { "vcpus" : "8", "vmem" : "4096", "vstorage" : "358400", "vnics" : "1" }
+        self.vhw_config["gold32"] = { "vcpus" : "4", "vmem" : "4096", "vstorage" : "358400", "vnics" : "1" }
         self.vhw_config["copper64"] = { "vcpus" : "2", "vmem" : "4096", "vstorage" : "61440", "vnics" : "1" }
         self.vhw_config["bronze64"]  = { "vcpus" : "2", "vmem" : "4096", "vstorage" : "870400", "vnics" : "1" }
         self.vhw_config["silver64"] = { "vcpus" : "4", "vmem" : "8192", "vstorage" : "1048576", "vnics" : "1" }
+        self.vhw_config["steel32"] = { "vcpus" : "8", "vmem" : "8192", "vstorage" : "1048576", "vnics" : "1" }
         self.vhw_config["steel64"] = { "vcpus" : "6", "vmem" : "16384", "vstorage" : "1048576", "vnics" : "1" }
         self.vhw_config["gold64"] = { "vcpus" : "8", "vmem" : "16384", "vstorage" : "1048576", "vnics" : "1" }
         self.vhw_config["platinum64"] = { "vcpus" : "16", "vmem" : "16384", "vstorage" : "2097152", "vnics" : "1" }
@@ -1541,7 +1542,7 @@ class PlmCmds(CommonCloudFunctions) :
                 _vol_name, _vol_path, _vol_format, _backing_path, _backing_format = _volume.split(':')
 
                 _xml_template += "\t\t<disk type='file' device='disk'>\n"
-                _xml_template += "\t\t\t<driver cache='none' io='native' name='qemu' type='" + _vol_format + "'/>\n"
+                _xml_template += "\t\t\t<driver name='qemu' type='" + _vol_format + "'/>\n"
                 _xml_template += "\t\t\t<source file='" + _vol_path + "'/>\n"
                 if _backing_path != "none" :
                     _xml_template += "\t\t\t<backingStore type='file'>\n"
