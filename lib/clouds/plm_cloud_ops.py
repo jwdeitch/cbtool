@@ -1581,6 +1581,7 @@ class PlmCmds(CommonCloudFunctions) :
 
         if obj_attr_list["netmode"] == "virtio" :
             _xml_template += "\t\t\t<model type='virtio'/>\n"
+            _xml_template += "\t\t\t\t<driver name='vhost' queues='" + str(int(self.vhw_config[obj_attr_list["size"]]["vcpus"])) + "'/>\n"
 
         _xml_template += "\t\t</interface>\n"
 
@@ -1703,3 +1704,36 @@ class PlmCmds(CommonCloudFunctions) :
         _status, _result_stdout, _result_stderr = _proc_man.run_os_command(_geniso_cmd)
 
         return True
+
+    @trace
+    def aidefine(self, obj_attr_list, current_step) :
+        try :
+            # Make sure we have a connection to all endpoints, for DHCP lookup purposes
+            # This happens in the case that you do target VM creations on hosts
+            # that are not running a DHCP server.
+            _vmc_uuid_list = self.osci.query_by_view(obj_attr_list["cloud_name"], "VMC", "BYUSERNAME", obj_attr_list["username"], "name", "all", False)
+            for _vmc_uuid_entry in _vmc_uuid_list :
+                _vmc_attr_list = self.osci.get_object(obj_attr_list["cloud_name"], "VMC", False, _vmc_uuid_entry.split('|')[0], False)
+                self.connect(_vmc_attr_list["access"], 
+                             _vmc_attr_list["credentials"], \
+                             _vmc_attr_list["name"], obj_attr_list)
+            _fmsg = "An error has occurred, but no error message was captured"
+            _status = 0
+        except Exception as e :
+            for line in traceback.format_exc().splitlines() :
+                cbwarn(line, True)
+            _status = 29
+            _fmsg = str(e)
+        finally :
+            if _status :
+                _msg = "AI " + obj_attr_list["name"] + " could not be defined "
+                _msg += " on " + self.get_description() + " \"" + obj_attr_list["cloud_name"] + "\" : "
+                _msg += _fmsg
+                cberr(_msg)
+                raise CldOpsException(_status, _msg)
+            else :
+                _msg = "AI " + obj_attr_list["uuid"] + " was successfully "
+                _msg += "defined on " + self.get_description() + " \"" + obj_attr_list["cloud_name"]
+                _msg += "\"."
+                cbdebug(_msg)
+                return _status, _msg
